@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title> DOG PARK MONITOR </title>
+        <script src="drawdogs.js"></script>
+    </head>
+    
+    <body>
+        <img id="background_img" src="images/back.jpg" alt="Background" width="0" height="0">
+        <img id="dog_img" src="images/dog.png" alt="Dog" width="0" height="0">
+        <img id="heart_img" src="images/heart.png" alt="Heart" width="0" height="0">
+        <img id="therm_img" src="images/therm.png" alt="Thermometer" width="0" height="0">
+
+        <table>
+            <tr><td><center><font face = 'arial' size = '4'>Dog Park Monitor</font></center></td></tr>
+            <tr><td><canvas id="myCanvas" width="800" height="600" style="border:1px solid #d3d3d3;">
+                Your browser does not support the HTML5 canvas tag.</canvas></td></tr>
+            <tr><td><div id="doginfo"></div></td></tr>
+            <tr><td><div id="watchlist"></div></td></tr>
+
+        </table>
+
+ <script>
+    //when the backgound image is loaded, display it
+    document.getElementById("background_img").onload = function() {
+        var c = document.getElementById("myCanvas");
+        var ctx = c.getContext("2d");
+        var img = document.getElementById("background_img");
+        ctx.drawImage(img, 0, 0, SCREEN_W, SCREEN_H);
+    }
+    
+    //redraw ever REFRESH_INTERVAL
+    setInterval (function() {drawArena();}, REFRESH_INTERVAL);
+    
+    var dognum = getQueryVariable("dog"); //dog to display
+    var mouseloc = {x:0, y:0};  //current mouse location
+
+    /**
+     * Get mouse position
+     * @param {type} canvas canvas for relative positions
+     * @param {type} evt event
+     * @returns {getMousePos.indexAnonym$0} x/y coordinates of mouse
+     */
+    function getMousePos(canvas, evt) {
+        var rect = canvas.getBoundingClientRect();
+        return {
+          x: evt.clientX - rect.left,
+          y: evt.clientY - rect.top
+        };
+    }
+      
+    var canvas = document.getElementById('myCanvas');
+    var context = canvas.getContext('2d');
+
+    /**
+     * Add event listener to mouse, check if it is hovering
+     * over any dogs on the canvas - set as active dog.
+     */
+    canvas.addEventListener('mousemove', function(evt) {
+        mouseloc = getMousePos(canvas, evt);
+        if (typeof dogarray !== 'undefined')
+            for (i = 0; i < dogarray.length; i++) {
+                if ((mouseloc.x >= scaleX(dogarray[i].xcoord)-DOG_W/2) && 
+                    (mouseloc.x <= scaleX(dogarray[i].xcoord)+DOG_W/2) &&
+                    (mouseloc.y >= scaleY(dogarray[i].ycoord)-DOG_H/2) &&
+                    (mouseloc.y <= scaleY(dogarray[i].ycoord)+DOG_H/2)) {
+                    activedog = dogarray[i];
+                    break;
+                }
+            }
+      }, false);
+</script>
+    </body>
+</html>
